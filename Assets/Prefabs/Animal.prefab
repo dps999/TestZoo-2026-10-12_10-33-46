@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2698539255527714379}
   - component: {fileID: 6339890007226129451}
   - component: {fileID: 8978339890210243071}
+  - component: {fileID: 8057124662231048291}
   - component: {fileID: 1324805914302186497}
   m_Layer: 0
   m_Name: Animal
@@ -148,8 +149,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b2d3d3c5945a49f38be97db6d617c9d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
+--- !u!114 &8057124662231048291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6333229293482643017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9139cb7fdb94b019cc0e3c6828b2146, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
   screenEdgeMargin: 0.05
 --- !u!114 &1324805914302186497
 MonoBehaviour:

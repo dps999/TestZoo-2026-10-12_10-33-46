@@ -17,8 +17,6 @@ namespace DefaultNamespace
 
         public void Move(Animal animal, float _)
         {
-            animal.TurnTowardVisibleArea();
-
             Rigidbody body = animal.MovementBody;
             Vector3 horizontalVelocity = animal.MoveDirection.normalized * speed;
             body.linearVelocity = new Vector3(horizontalVelocity.x, body.linearVelocity.y, horizontalVelocity.z);

@@ -30,8 +30,6 @@ namespace DefaultNamespace
                 ResetDirectionTimer();
             }
 
-            animal.TurnTowardVisibleArea();
-
             Rigidbody body = animal.MovementBody;
             Vector3 horizontalVelocity = new Vector3(body.linearVelocity.x, 0f, body.linearVelocity.z);
             Vector3 desiredVelocity = animal.MoveDirection * maxSpeed;

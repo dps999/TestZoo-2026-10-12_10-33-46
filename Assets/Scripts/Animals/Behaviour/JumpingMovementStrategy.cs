@@ -31,16 +31,6 @@ namespace DefaultNamespace
 
             if (isJumping)
             {
-                if (animal.TurnTowardVisibleArea())
-                {
-                    Vector3 correctedHorizontalVelocity = animal.MoveDirection * (jumpDistance / jumpDuration);
-                    Vector3 velocity = body.linearVelocity;
-                    body.linearVelocity = new Vector3(
-                        correctedHorizontalVelocity.x,
-                        velocity.y,
-                        correctedHorizontalVelocity.z);
-                }
-
                 jumpTimeRemaining -= deltaTime;
                 if (jumpTimeRemaining <= 0f)
                 {
@@ -57,7 +47,7 @@ namespace DefaultNamespace
             if (jumpTimer > 0f)
                 return;
 
-            animal.ChooseDirectionOrReturnToVisibleArea();
+            animal.ChooseDirection();
 
             Vector3 horizontalVelocity = animal.MoveDirection * (jumpDistance / jumpDuration);
             float upwardVelocity = Mathf.Abs(Physics.gravity.y) * jumpDuration * 0.5f;
