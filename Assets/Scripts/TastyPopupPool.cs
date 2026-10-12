@@ -1,4 +1,4 @@
-using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -15,6 +15,19 @@ namespace DefaultNamespace
 
         private ObjectPool<TextMeshPro> popupPool;
         private TextMeshPro popupPrefab;
+        private readonly List<PopupTimer> activePopups = new List<PopupTimer>(MaxPoolSize);
+
+        private struct PopupTimer
+        {
+            public TextMeshPro Popup;
+            public float RemainingTime;
+
+            public PopupTimer(TextMeshPro popup, float remainingTime)
+            {
+                Popup = popup;
+                RemainingTime = remainingTime;
+            }
+        }
 
         public static void Show(TextMeshPro prefab, Vector3 worldPosition)
         {
@@ -76,14 +89,28 @@ namespace DefaultNamespace
         {
             TextMeshPro popup = popupPool.Get();
             popup.transform.position = worldPosition + Vector3.up * 0.7f;
-
-            StartCoroutine(ReturnToPool(popup));
+            activePopups.Add(new PopupTimer(popup, PopupLifetime));
         }
 
-        private IEnumerator ReturnToPool(TextMeshPro popup)
+        private void Update()
         {
-            yield return new WaitForSeconds(PopupLifetime);
-            popupPool.Release(popup);
+            float deltaTime = Time.deltaTime;
+
+            for (int i = activePopups.Count - 1; i >= 0; i--)
+            {
+                PopupTimer timer = activePopups[i];
+                timer.RemainingTime -= deltaTime;
+
+                if (timer.RemainingTime <= 0f)
+                {
+                    activePopups.RemoveAt(i);
+                    popupPool.Release(timer.Popup);
+                }
+                else
+                {
+                    activePopups[i] = timer;
+                }
+            }
         }
     }
 }
