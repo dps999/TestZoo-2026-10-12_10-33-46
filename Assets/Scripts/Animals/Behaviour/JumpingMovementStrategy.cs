@@ -27,14 +27,24 @@ namespace DefaultNamespace
 
         public void Move(Animal animal, float deltaTime)
         {
+            Rigidbody body = animal.MovementBody;
+
             if (isJumping)
             {
+                if (animal.TurnTowardVisibleArea())
+                {
+                    Vector3 correctedHorizontalVelocity = animal.MoveDirection * (jumpDistance / jumpDuration);
+                    Vector3 velocity = body.linearVelocity;
+                    body.linearVelocity = new Vector3(
+                        correctedHorizontalVelocity.x,
+                        velocity.y,
+                        correctedHorizontalVelocity.z);
+                }
+
                 jumpTimeRemaining -= deltaTime;
                 if (jumpTimeRemaining <= 0f)
                 {
-                    Rigidbody body = animal.MovementBody;
-                    Vector3 velocity = body.linearVelocity;
-                    body.linearVelocity = new Vector3(0f, velocity.y, 0f);
+                    StopHorizontalMovement(body);
                     isJumping = false;
                     jumpTimer = jumpInterval;
                 }
@@ -42,6 +52,7 @@ namespace DefaultNamespace
                 return;
             }
 
+            StopHorizontalMovement(body);
             jumpTimer -= deltaTime;
             if (jumpTimer > 0f)
                 return;
@@ -50,10 +61,15 @@ namespace DefaultNamespace
 
             Vector3 horizontalVelocity = animal.MoveDirection * (jumpDistance / jumpDuration);
             float upwardVelocity = Mathf.Abs(Physics.gravity.y) * jumpDuration * 0.5f;
-            Rigidbody body = animal.MovementBody;
             body.linearVelocity = new Vector3(horizontalVelocity.x, upwardVelocity, horizontalVelocity.z);
             jumpTimeRemaining = jumpDuration;
             isJumping = true;
+        }
+
+        private static void StopHorizontalMovement(Rigidbody body)
+        {
+            Vector3 velocity = body.linearVelocity;
+            body.linearVelocity = new Vector3(0f, velocity.y, 0f);
         }
     }
 }

@@ -22,6 +22,7 @@ namespace DefaultNamespace
         [SerializeField, Range(0f, 0.25f)] private float screenEdgeMargin = 0.05f;
 
         private Rigidbody body;
+        private Renderer cachedRenderer;
         private Camera movementCamera;
         private Vector3 moveDirection;
         private IAnimalMovementStrategy movementStrategy;
@@ -37,6 +38,7 @@ namespace DefaultNamespace
         private void Awake()
         {
             body = GetComponent<Rigidbody>();
+            cachedRenderer = GetComponentInChildren<Renderer>(true);
         }
 
         private void OnEnable()
@@ -61,6 +63,13 @@ namespace DefaultNamespace
 
             movementStrategy = movement;
             feedingBehaviour = feeding;
+        }
+
+        internal void ConfigureAppearance(string displayName, Material material)
+        {
+            name = displayName;
+            if (material != null && cachedRenderer != null)
+                cachedRenderer.sharedMaterial = material;
         }
 
         internal void SetReturnToPool(System.Action<Animal> callback)
@@ -107,10 +116,15 @@ namespace DefaultNamespace
                 ChooseDirection();
         }
 
-        internal void TurnTowardVisibleArea()
+        internal bool TurnTowardVisibleArea()
         {
             if (TryGetDirectionToVisibleArea(out Vector3 returnDirection))
+            {
                 moveDirection = returnDirection;
+                return true;
+            }
+
+            return false;
         }
 
         internal bool TryGetDirectionToVisibleArea(out Vector3 direction)

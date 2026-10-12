@@ -75,16 +75,7 @@ namespace DefaultNamespace
         private void ShowPopup(Vector3 worldPosition)
         {
             TextMeshPro popup = popupPool.Get();
-            Camera mainCamera = Camera.main;
             popup.transform.position = worldPosition + Vector3.up * 0.7f;
-
-            if (mainCamera != null)
-            {
-                popup.transform.rotation = Quaternion.LookRotation(
-                    mainCamera.transform.position - popup.transform.position,
-                    mainCamera.transform.up);
-                popup.transform.position -= mainCamera.transform.up * 0.6f;
-            }
 
             StartCoroutine(ReturnToPool(popup));
         }

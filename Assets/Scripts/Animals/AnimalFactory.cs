@@ -37,7 +37,18 @@ namespace DefaultNamespace
                     poolParent,
                     configuration.InitialPoolSize,
                     configuration.MaxPoolSize);
-                animalPools.Add(new AnimalPoolEntry(pool, definition));
+                string displayName = string.IsNullOrWhiteSpace(definition.Name)
+                    ? pool.Prefab.name
+                    : definition.Name;
+                IAnimalMovementStrategy sharedMovementStrategy = definition.MovementType == AnimalMovementType.Straight
+                    ? new StraightMovementStrategy(definition.Speed)
+                    : null;
+                animalPools.Add(new AnimalPoolEntry(
+                    pool,
+                    definition,
+                    displayName,
+                    sharedMovementStrategy,
+                    CreateFeedingBehaviour(definition)));
             }
 
             if (animalPools.Count == 0)
@@ -101,26 +112,13 @@ namespace DefaultNamespace
             if (!animal.HasStrategies)
             {
                 animal.ConfigureStrategies(
-                    CreateMovementStrategy(entry.Definition),
-                    CreateFeedingBehaviour(entry.Definition));
+                    entry.SharedMovementStrategy ?? CreateMovementStrategy(entry.Definition),
+                    entry.FeedingBehaviour);
+                animal.ConfigureAppearance(entry.DisplayName, entry.Definition.Material);
             }
-            animal.name = string.IsNullOrWhiteSpace(entry.Definition.Name)
-                ? entry.Pool.Prefab.name
-                : entry.Definition.Name;
-            ApplyMaterial(animal, entry.Definition.Material);
             entry.Pool.Activate(animal);
             rotation = entry.Pool.Prefab.transform.rotation;
             return true;
-        }
-
-        private static void ApplyMaterial(Animal animal, Material material)
-        {
-            if (material == null)
-                return;
-
-            Renderer renderer = animal.GetComponentInChildren<Renderer>(true);
-            if (renderer != null)
-                renderer.sharedMaterial = material;
         }
 
         public void Dispose()
@@ -139,11 +137,22 @@ namespace DefaultNamespace
         {
             public AnimalPool Pool { get; }
             public AnimalDefinition Definition { get; }
+            public string DisplayName { get; }
+            public IAnimalMovementStrategy SharedMovementStrategy { get; }
+            public IFeedingBehaviour FeedingBehaviour { get; }
 
-            public AnimalPoolEntry(AnimalPool pool, AnimalDefinition definition)
+            public AnimalPoolEntry(
+                AnimalPool pool,
+                AnimalDefinition definition,
+                string displayName,
+                IAnimalMovementStrategy sharedMovementStrategy,
+                IFeedingBehaviour feedingBehaviour)
             {
                 Pool = pool;
                 Definition = definition;
+                DisplayName = displayName;
+                SharedMovementStrategy = sharedMovementStrategy;
+                FeedingBehaviour = feedingBehaviour;
             }
         }
     }
