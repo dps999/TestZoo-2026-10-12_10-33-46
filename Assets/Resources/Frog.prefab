@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6339890007226129451}
   - component: {fileID: 8978339890210243071}
   m_Layer: 0
-  m_Name: Prey
+  m_Name: Frog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

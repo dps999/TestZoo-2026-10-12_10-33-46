@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4326125075310671031}
   - component: {fileID: 7382055804255610297}
   m_Layer: 0
-  m_Name: Predator
+  m_Name: Snake
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
