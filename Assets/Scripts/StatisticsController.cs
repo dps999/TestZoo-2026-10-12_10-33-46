@@ -1,13 +1,11 @@
-using TMPro;
 using UnityEngine;
 using VContainer;
 
 namespace DefaultNamespace
 {
-    public class UIManager : MonoBehaviour
+    public sealed class StatisticsController : MonoBehaviour
     {
-        [SerializeField] private TMP_Text preyCounter;
-        [SerializeField] private TMP_Text predatorCounter;
+        [SerializeField] private StatisticsView view;
 
         private GameStatistics gameStatistics;
         private bool isSubscribed;
@@ -35,13 +33,10 @@ namespace DefaultNamespace
 
         private void RefreshCounters()
         {
-            if (gameStatistics == null)
+            if (gameStatistics == null || view == null)
                 return;
 
-            if (preyCounter != null)
-                preyCounter.text = $"Death prey: {gameStatistics.PreyDeaths}";
-            if (predatorCounter != null)
-                predatorCounter.text = $"Death predators: {gameStatistics.PredatorDeaths}";
+            view.Render(gameStatistics.PreyDeaths, gameStatistics.PredatorDeaths);
         }
 
         private void SubscribeToStatistics()

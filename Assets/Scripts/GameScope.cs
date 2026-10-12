@@ -11,7 +11,7 @@ namespace DefaultNamespace
             builder.Register<IGameEventBus, GameEventBus>(Lifetime.Singleton);
             builder.Register<GameStatistics>(Lifetime.Singleton);
             builder.RegisterComponentInHierarchy<Camera>();
-            builder.RegisterComponentInHierarchy<UIManager>();
+            builder.RegisterComponentInHierarchy<StatisticsController>();
             builder.RegisterComponentInHierarchy<AnimalSpawnSystem>();
         }
     }
