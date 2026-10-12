@@ -10,13 +10,14 @@
 // // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // // THE SOFTWARE.
 
+using TMPro;
 using UnityEngine;
 
 namespace DefaultNamespace
 {
     public class Predators : Animal
     {
-        [SerializeField] private RectTransform tastyPopupPrefab;
+        [SerializeField] private TextMeshPro tastyPopupPrefab;
 
         protected virtual void OnCollisionEnter(Collision collision)
         {

@@ -154,4 +154,4 @@ MonoBehaviour:
   directionChangeInterval: 2
   screenEdgeMargin: 0.05
   speed: 2
-  tastyPopupPrefab: {fileID: 3753938060142368510, guid: c1fd3a1fa851345998495354f631d3ca, type: 3}
+  tastyPopupPrefab: {fileID: 1391036834442767632, guid: c1fd3a1fa851345998495354f631d3ca, type: 3}

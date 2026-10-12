@@ -2,7 +2,6 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Pool;
-using UnityEngine.UI;
 
 namespace DefaultNamespace
 {
@@ -14,11 +13,10 @@ namespace DefaultNamespace
 
         private static TastyPopupPool instance;
 
-        private ObjectPool<RectTransform> popupPool;
-        private RectTransform popupPrefab;
-        private RectTransform canvasRect;
+        private ObjectPool<TextMeshPro> popupPool;
+        private TextMeshPro popupPrefab;
 
-        public static void Show(RectTransform prefab, Vector3 worldPosition)
+        public static void Show(TextMeshPro prefab, Vector3 worldPosition)
         {
             if (prefab == null)
                 return;
@@ -29,20 +27,13 @@ namespace DefaultNamespace
             instance.ShowPopup(worldPosition);
         }
 
-        private static void CreatePool(RectTransform prefab)
+        private static void CreatePool(TextMeshPro prefab)
         {
             GameObject poolObject = new GameObject("TastyPopupPool");
             instance = poolObject.AddComponent<TastyPopupPool>();
             instance.popupPrefab = prefab;
 
-            GameObject canvasObject = new GameObject("TastyPopupCanvas");
-            canvasObject.transform.SetParent(poolObject.transform, false);
-            Canvas canvas = canvasObject.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvasObject.AddComponent<CanvasScaler>();
-            instance.canvasRect = canvas.GetComponent<RectTransform>();
-
-            instance.popupPool = new ObjectPool<RectTransform>(
+            instance.popupPool = new ObjectPool<TextMeshPro>(
                 instance.CreatePopup,
                 instance.OnGetPopup,
                 instance.OnReleasePopup,
@@ -53,51 +44,52 @@ namespace DefaultNamespace
 
             for (int i = 0; i < PrewarmCount; i++)
             {
-                RectTransform popup = instance.popupPool.Get();
+                TextMeshPro popup = instance.popupPool.Get();
                 instance.popupPool.Release(popup);
             }
         }
 
-        private RectTransform CreatePopup()
+        private TextMeshPro CreatePopup()
         {
-            RectTransform popup = Instantiate(popupPrefab, canvasRect, false);
+            TextMeshPro popup = Instantiate(popupPrefab, transform, false);
+            popup.gameObject.name = "TastyPopup";
+            popup.text = "Tasty!";
             return popup;
         }
 
-        private void OnGetPopup(RectTransform popup)
+        private void OnGetPopup(TextMeshPro popup)
         {
             popup.gameObject.SetActive(true);
         }
 
-        private void OnReleasePopup(RectTransform popup)
+        private void OnReleasePopup(TextMeshPro popup)
         {
             popup.gameObject.SetActive(false);
         }
 
-        private void OnDestroyPopup(RectTransform popup)
+        private void OnDestroyPopup(TextMeshPro popup)
         {
             Destroy(popup.gameObject);
         }
 
         private void ShowPopup(Vector3 worldPosition)
         {
-            RectTransform popup = popupPool.Get();
+            TextMeshPro popup = popupPool.Get();
             Camera mainCamera = Camera.main;
-            Vector2 screenPosition = mainCamera != null
-                ? (Vector2)mainCamera.WorldToScreenPoint(worldPosition)
-                : new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
-            screenPosition += Vector2.down * 40f;
+            popup.transform.position = worldPosition + Vector3.up * 0.7f;
 
-            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    canvasRect, screenPosition, null, out Vector2 localPosition))
+            if (mainCamera != null)
             {
-                popup.anchoredPosition = localPosition;
+                popup.transform.rotation = Quaternion.LookRotation(
+                    mainCamera.transform.position - popup.transform.position,
+                    mainCamera.transform.up);
+                popup.transform.position -= mainCamera.transform.up * 0.6f;
             }
 
             StartCoroutine(ReturnToPool(popup));
         }
 
-        private IEnumerator ReturnToPool(RectTransform popup)
+        private IEnumerator ReturnToPool(TextMeshPro popup)
         {
             yield return new WaitForSeconds(PopupLifetime);
             popupPool.Release(popup);
