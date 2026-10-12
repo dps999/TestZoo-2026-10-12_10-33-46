@@ -40,14 +40,10 @@ namespace DefaultNamespace
                 string displayName = string.IsNullOrWhiteSpace(definition.Name)
                     ? pool.Prefab.name
                     : definition.Name;
-                IAnimalMovementStrategy sharedMovementStrategy = definition.MovementType == AnimalMovementType.Straight
-                    ? new StraightMovementStrategy(definition.Speed)
-                    : null;
                 animalPools.Add(new AnimalPoolEntry(
                     pool,
                     definition,
                     displayName,
-                    sharedMovementStrategy,
                     CreateFeedingBehaviour(definition)));
             }
 
@@ -65,7 +61,9 @@ namespace DefaultNamespace
                         definition.MaxSpeed,
                         definition.DirectionChangeInterval);
                 case AnimalMovementType.Straight:
-                    return new StraightMovementStrategy(definition.Speed);
+                    return new StraightMovementStrategy(
+                        definition.Speed,
+                        definition.DirectionChangeInterval);
                 case AnimalMovementType.Jumping:
                     return new JumpingMovementStrategy(
                         definition.JumpInterval,
@@ -112,7 +110,7 @@ namespace DefaultNamespace
             if (!animal.HasStrategies)
             {
                 animal.ConfigureStrategies(
-                    entry.SharedMovementStrategy ?? CreateMovementStrategy(entry.Definition),
+                    CreateMovementStrategy(entry.Definition),
                     entry.FeedingBehaviour);
                 animal.ConfigureAppearance(entry.DisplayName, entry.Definition.Material);
             }
@@ -138,20 +136,17 @@ namespace DefaultNamespace
             public AnimalPool Pool { get; }
             public AnimalDefinition Definition { get; }
             public string DisplayName { get; }
-            public IAnimalMovementStrategy SharedMovementStrategy { get; }
             public IFeedingBehaviour FeedingBehaviour { get; }
 
             public AnimalPoolEntry(
                 AnimalPool pool,
                 AnimalDefinition definition,
                 string displayName,
-                IAnimalMovementStrategy sharedMovementStrategy,
                 IFeedingBehaviour feedingBehaviour)
             {
                 Pool = pool;
                 Definition = definition;
                 DisplayName = displayName;
-                SharedMovementStrategy = sharedMovementStrategy;
                 FeedingBehaviour = feedingBehaviour;
             }
         }
