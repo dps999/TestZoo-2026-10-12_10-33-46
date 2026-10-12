@@ -82,7 +82,8 @@ namespace DefaultNamespace
 
         private void OnDestroyPopup(TextMeshPro popup)
         {
-            Destroy(popup.gameObject);
+            if (popup != null)
+                Destroy(popup.gameObject);
         }
 
         private void ShowPopup(Vector3 worldPosition)
