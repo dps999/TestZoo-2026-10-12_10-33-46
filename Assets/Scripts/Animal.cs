@@ -56,6 +56,21 @@ namespace DefaultNamespace
             }
         }
 
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (this is not Predators)
+                return;
+
+            Animal targetAnimal = collision.gameObject.GetComponentInParent<Animal>();
+            if (targetAnimal == null || targetAnimal == this)
+                return;
+
+            if (targetAnimal is Predators && GetInstanceID() > targetAnimal.GetInstanceID())
+                return;
+
+            Destroy(targetAnimal.gameObject);
+        }
+
         private void ChooseDirection()
         {
             Vector2 randomDirection = Random.insideUnitCircle.normalized;
@@ -66,10 +81,6 @@ namespace DefaultNamespace
         private bool TryGetDirectionToVisibleArea(out Vector3 direction)
         {
             direction = Vector3.zero;
-            if (movementCamera == null)
-                movementCamera = Camera.main;
-            if (movementCamera == null)
-                return false;
 
             Vector3 viewportPosition = movementCamera.WorldToViewportPoint(body.position);
             bool nearOrOutsideEdge = viewportPosition.z <= 0f

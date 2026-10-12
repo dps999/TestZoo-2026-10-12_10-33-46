@@ -17,16 +17,21 @@ namespace DefaultNamespace
 {
     public class AnimalFabric : MonoBehaviour
     {
-        [SerializeField] private Animal animalPrefab;
         [SerializeField, Min(0.1f)] private float minimumSpawnInterval = 1f;
         [SerializeField, Min(0.1f)] private float maximumSpawnInterval = 2f;
         [SerializeField, Min(0f)] private float spawnHeight = 0.5f;
 
         private Camera spawnCamera;
+        private Animal preyPrefab;
+        private Animal predatorPrefab;
 
         private void Awake()
         {
             spawnCamera = Camera.main;
+            GameObject preyAsset = Resources.Load<GameObject>("Prey");
+            GameObject predatorAsset = Resources.Load<GameObject>("Predator");
+            preyPrefab = preyAsset != null ? preyAsset.GetComponent<Animal>() : null;
+            predatorPrefab = predatorAsset != null ? predatorAsset.GetComponent<Animal>() : null;
             StartCoroutine(SpawnAnimals());
         }
 
@@ -43,6 +48,10 @@ namespace DefaultNamespace
         private void SpawnAnimal()
         {
             Vector3 spawnPosition = GetSpawnPosition();
+            Animal animalPrefab = Random.value < 0.5f ? preyPrefab : predatorPrefab;
+            if (animalPrefab == null)
+                animalPrefab = preyPrefab != null ? preyPrefab : predatorPrefab;
+
             if (animalPrefab != null)
             {
                 Animal animal = Instantiate(animalPrefab, spawnPosition, animalPrefab.transform.rotation);
