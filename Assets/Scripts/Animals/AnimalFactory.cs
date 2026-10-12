@@ -31,6 +31,12 @@ namespace DefaultNamespace
                 if (definition == null || definition.Prefab == null)
                     continue;
 
+                if (definition.Movement == null || definition.Feeding == null)
+                {
+                    Debug.LogError($"Animal '{definition.Name}' must have movement and feeding definitions assigned.", context);
+                    continue;
+                }
+
                 var pool = new AnimalPool(
                     objectResolver,
                     definition.Prefab,
@@ -43,54 +49,11 @@ namespace DefaultNamespace
                 animalPools.Add(new AnimalPoolEntry(
                     pool,
                     definition,
-                    displayName,
-                    CreateFeedingBehaviour(definition)));
+                    displayName));
             }
 
             if (animalPools.Count == 0)
                 Debug.LogError("No valid animal definitions are configured.", context);
-        }
-
-        private static IAnimalMovementStrategy CreateMovementStrategy(AnimalDefinition definition)
-        {
-            switch (definition.MovementType)
-            {
-                case AnimalMovementType.Wandering:
-                    return new WanderingMovementStrategy(
-                        definition.MoveForce,
-                        definition.MaxSpeed,
-                        definition.DirectionChangeInterval);
-                case AnimalMovementType.Straight:
-                    return new StraightMovementStrategy(
-                        definition.Speed,
-                        definition.DirectionChangeInterval);
-                case AnimalMovementType.Jumping:
-                    return new JumpingMovementStrategy(
-                        definition.JumpInterval,
-                        definition.JumpDistance,
-                        definition.JumpDuration);
-                default:
-                    throw new ArgumentOutOfRangeException(
-                        nameof(definition.MovementType),
-                        definition.MovementType,
-                        "Unknown animal movement type.");
-            }
-        }
-
-        private static IFeedingBehaviour CreateFeedingBehaviour(AnimalDefinition definition)
-        {
-            switch (definition.FeedingBehaviourType)
-            {
-                case FeedingBehaviourType.Prey:
-                    return new PreyFeedingBehaviour();
-                case FeedingBehaviourType.Predator:
-                    return new PredatorFeedingBehaviour();
-                default:
-                    throw new ArgumentOutOfRangeException(
-                        nameof(definition.FeedingBehaviourType),
-                        definition.FeedingBehaviourType,
-                        "Unknown animal feeding behaviour type.");
-            }
         }
 
         public bool TryCreateRandom(out Animal animal, out Quaternion rotation)
@@ -110,8 +73,8 @@ namespace DefaultNamespace
             if (!animal.HasStrategies)
             {
                 animal.ConfigureStrategies(
-                    CreateMovementStrategy(entry.Definition),
-                    entry.FeedingBehaviour);
+                    entry.Definition.Movement.CreateStrategy(),
+                    entry.Definition.Feeding.CreateBehaviour());
                 animal.ConfigureAppearance(entry.DisplayName, entry.Definition.Material);
             }
             entry.Pool.Activate(animal);
@@ -136,18 +99,15 @@ namespace DefaultNamespace
             public AnimalPool Pool { get; }
             public AnimalDefinition Definition { get; }
             public string DisplayName { get; }
-            public IFeedingBehaviour FeedingBehaviour { get; }
 
             public AnimalPoolEntry(
                 AnimalPool pool,
                 AnimalDefinition definition,
-                string displayName,
-                IFeedingBehaviour feedingBehaviour)
+                string displayName)
             {
                 Pool = pool;
                 Definition = definition;
                 DisplayName = displayName;
-                FeedingBehaviour = feedingBehaviour;
             }
         }
     }

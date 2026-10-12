@@ -4,19 +4,6 @@ using UnityEngine;
 
 namespace DefaultNamespace
 {
-    public enum AnimalMovementType
-    {
-        Wandering = 0,
-        Straight = 1,
-        Jumping = 2
-    }
-
-    public enum FeedingBehaviourType
-    {
-        Prey = 0,
-        Predator = 1
-    }
-
     [Serializable]
     public sealed class AnimalDefinition
     {
@@ -25,28 +12,14 @@ namespace DefaultNamespace
 
         [SerializeField] private Animal prefab;
         [SerializeField] private Material material;
-        [SerializeField] private AnimalMovementType movementType;
-        [SerializeField] private FeedingBehaviourType feedingBehaviourType;
-        [SerializeField, Min(0f)] private float moveForce = 5f;
-        [SerializeField, Min(0f)] private float maxSpeed = 2f;
-        [SerializeField, Min(0.1f)] private float directionChangeInterval = 2f;
-        [SerializeField, Min(0f)] private float speed = 2f;
-        [SerializeField, Min(0.1f)] private float jumpInterval = 2f;
-        [SerializeField, Min(0f)] private float jumpDistance = 2f;
-        [SerializeField, Min(0.1f)] private float jumpDuration = 0.5f;
+        [SerializeField] private MovementDefinition movement;
+        [SerializeField] private FeedingBehaviourDefinition feeding;
 
         public string Name => name;
         public Animal Prefab => prefab;
         public Material Material => material;
-        public AnimalMovementType MovementType => movementType;
-        public FeedingBehaviourType FeedingBehaviourType => feedingBehaviourType;
-        public float MoveForce => moveForce;
-        public float MaxSpeed => maxSpeed;
-        public float DirectionChangeInterval => directionChangeInterval;
-        public float Speed => speed;
-        public float JumpInterval => jumpInterval;
-        public float JumpDistance => jumpDistance;
-        public float JumpDuration => jumpDuration;
+        public MovementDefinition Movement => movement;
+        public FeedingBehaviourDefinition Feeding => feeding;
     }
 
     [CreateAssetMenu(fileName = "AnimalConfiguration", menuName = "TestZoo/Animal Configuration")]

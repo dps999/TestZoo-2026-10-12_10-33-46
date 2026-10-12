@@ -16,27 +16,13 @@ MonoBehaviour:
   - name: Frog
     prefab: {fileID: 8978339890210243071, guid: 3e2d98718d4ca45889e949ade68b2c57, type: 3}
     material: {fileID: 2100000, guid: 6a2a414a428e4a89a85d42ed7ef23be7, type: 2}
-    movementType: 2
-    feedingBehaviourType: 0
-    moveForce: 5
-    maxSpeed: 2
-    directionChangeInterval: 2
-    speed: 2
-    jumpInterval: 2
-    jumpDistance: 2
-    jumpDuration: 0.5
+    movement: {fileID: 11400000, guid: 31799b1c69df45deac00b3615f0cd88a, type: 2}
+    feeding: {fileID: 11400000, guid: e1a4e55567244eb6af821d758affa486, type: 2}
   - name: Snake
     prefab: {fileID: 8978339890210243071, guid: 3e2d98718d4ca45889e949ade68b2c57, type: 3}
     material: {fileID: 2100000, guid: 111dbdbd9a7d4e45bcfdc91868dff6a9, type: 2}
-    movementType: 1
-    feedingBehaviourType: 1
-    moveForce: 5
-    maxSpeed: 2
-    directionChangeInterval: 2
-    speed: 2
-    jumpInterval: 2
-    jumpDistance: 2
-    jumpDuration: 0.5
+    movement: {fileID: 11400000, guid: 8ebe28cb6b5b4cefa7d2bd4334bd3890, type: 2}
+    feeding: {fileID: 11400000, guid: 14beb71deeee47f6aca8d4dd78db2b68, type: 2}
   minimumSpawnInterval: 1
   maximumSpawnInterval: 2
   spawnHeight: 0.5
