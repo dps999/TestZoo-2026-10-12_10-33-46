@@ -28,8 +28,11 @@ namespace DefaultNamespace
         private void Awake()
         {
             if (animalConfiguration == null)
+                animalConfiguration = Resources.Load<AnimalConfiguration>("AnimalConfiguration");
+
+            if (animalConfiguration == null)
             {
-                Debug.LogError("AnimalConfiguration is not assigned.", this);
+                Debug.LogError("AnimalConfiguration is not assigned and could not be loaded from Resources.", this);
                 enabled = false;
                 return;
             }

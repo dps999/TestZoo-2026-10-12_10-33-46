@@ -20,7 +20,11 @@ namespace DefaultNamespace
     [Serializable]
     public sealed class AnimalDefinition
     {
+        [SerializeField]
+        private string name;
+
         [SerializeField] private Animal prefab;
+        [SerializeField] private Material material;
         [SerializeField] private AnimalMovementType movementType;
         [SerializeField] private FeedingBehaviourType feedingBehaviourType;
         [SerializeField, Min(0f)] private float moveForce = 5f;
@@ -31,7 +35,9 @@ namespace DefaultNamespace
         [SerializeField, Min(0f)] private float jumpDistance = 2f;
         [SerializeField, Min(0.1f)] private float jumpDuration = 0.5f;
 
+        public string Name => name;
         public Animal Prefab => prefab;
+        public Material Material => material;
         public AnimalMovementType MovementType => movementType;
         public FeedingBehaviourType FeedingBehaviourType => feedingBehaviourType;
         public float MoveForce => moveForce;

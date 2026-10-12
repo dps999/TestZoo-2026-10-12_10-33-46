@@ -104,9 +104,23 @@ namespace DefaultNamespace
                     CreateMovementStrategy(entry.Definition),
                     CreateFeedingBehaviour(entry.Definition));
             }
+            animal.name = string.IsNullOrWhiteSpace(entry.Definition.Name)
+                ? entry.Pool.Prefab.name
+                : entry.Definition.Name;
+            ApplyMaterial(animal, entry.Definition.Material);
             entry.Pool.Activate(animal);
             rotation = entry.Pool.Prefab.transform.rotation;
             return true;
+        }
+
+        private static void ApplyMaterial(Animal animal, Material material)
+        {
+            if (material == null)
+                return;
+
+            Renderer renderer = animal.GetComponentInChildren<Renderer>(true);
+            if (renderer != null)
+                renderer.sharedMaterial = material;
         }
 
         public void Dispose()

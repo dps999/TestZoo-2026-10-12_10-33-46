@@ -8,6 +8,8 @@ namespace DefaultNamespace
         private readonly float jumpDistance;
         private readonly float jumpDuration;
         private float jumpTimer;
+        private float jumpTimeRemaining;
+        private bool isJumping;
 
         public JumpingMovementStrategy(float jumpInterval, float jumpDistance, float jumpDuration)
         {
@@ -19,10 +21,27 @@ namespace DefaultNamespace
         public void OnActivated(Animal animal)
         {
             jumpTimer = 0f;
+            jumpTimeRemaining = 0f;
+            isJumping = false;
         }
 
         public void Move(Animal animal, float deltaTime)
         {
+            if (isJumping)
+            {
+                jumpTimeRemaining -= deltaTime;
+                if (jumpTimeRemaining <= 0f)
+                {
+                    Rigidbody body = animal.MovementBody;
+                    Vector3 velocity = body.linearVelocity;
+                    body.linearVelocity = new Vector3(0f, velocity.y, 0f);
+                    isJumping = false;
+                    jumpTimer = jumpInterval;
+                }
+
+                return;
+            }
+
             jumpTimer -= deltaTime;
             if (jumpTimer > 0f)
                 return;
@@ -33,7 +52,8 @@ namespace DefaultNamespace
             float upwardVelocity = Mathf.Abs(Physics.gravity.y) * jumpDuration * 0.5f;
             Rigidbody body = animal.MovementBody;
             body.linearVelocity = new Vector3(horizontalVelocity.x, upwardVelocity, horizontalVelocity.z);
-            jumpTimer = jumpInterval;
+            jumpTimeRemaining = jumpDuration;
+            isJumping = true;
         }
     }
 }

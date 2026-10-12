@@ -11,9 +11,11 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1d34bad18f5745a48c7bf24620489a54, type: 3}
   m_Name: AnimalConfiguration
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   animals:
-  - prefab: {fileID: 8978339890210243071, guid: 3e2d98718d4ca45889e949ade68b2c57, type: 3}
+  - name: Frog
+    prefab: {fileID: 8978339890210243071, guid: 3e2d98718d4ca45889e949ade68b2c57, type: 3}
+    material: {fileID: 2100000, guid: 6a2a414a428e4a89a85d42ed7ef23be7, type: 2}
     movementType: 2
     feedingBehaviourType: 0
     moveForce: 5
@@ -23,7 +25,9 @@ MonoBehaviour:
     jumpInterval: 2
     jumpDistance: 2
     jumpDuration: 0.5
-  - prefab: {fileID: 8978339890210243071, guid: 3e2d98718d4ca45889e949ade68b2c57, type: 3}
+  - name: Snake
+    prefab: {fileID: 8978339890210243071, guid: 3e2d98718d4ca45889e949ade68b2c57, type: 3}
+    material: {fileID: 2100000, guid: 111dbdbd9a7d4e45bcfdc91868dff6a9, type: 2}
     movementType: 1
     feedingBehaviourType: 1
     moveForce: 5
