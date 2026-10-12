@@ -146,10 +146,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 119030947192978403}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9dba2481ea145f18f08b15f6a17124b, type: 3}
+  m_Script: {fileID: 11500000, guid: 89b021f04b164043aab4ad95e834096d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   moveForce: 5
   maxSpeed: 2
   directionChangeInterval: 2
   screenEdgeMargin: 0.05
+  speed: 2
+  tastyPopupPrefab: {fileID: 3753938060142368510, guid: c1fd3a1fa851345998495354f631d3ca, type: 3}

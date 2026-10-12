@@ -22,19 +22,24 @@ namespace DefaultNamespace
         [SerializeField, Min(0.1f)] private float directionChangeInterval = 2f;
         [SerializeField, Range(0f, 0.25f)] private float screenEdgeMargin = 0.05f;
 
-        private Rigidbody body;
-        private Camera movementCamera;
-        private Vector3 moveDirection;
-        private float directionChangeTimer;
+        protected Rigidbody body;
+        protected Camera movementCamera;
+        protected Vector3 moveDirection;
+        protected float directionChangeTimer;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             body = GetComponent<Rigidbody>();
             movementCamera = Camera.main;
             ChooseDirection();
         }
 
-        private void FixedUpdate()
+        protected virtual void FixedUpdate()
+        {
+            MoveAnimal();
+        }
+
+        protected virtual void MoveAnimal()
         {
             directionChangeTimer -= Time.fixedDeltaTime;
             if (directionChangeTimer <= 0f)
@@ -56,29 +61,14 @@ namespace DefaultNamespace
             }
         }
 
-        private void OnCollisionEnter(Collision collision)
-        {
-            if (this is not Predators)
-                return;
-
-            Animal targetAnimal = collision.gameObject.GetComponentInParent<Animal>();
-            if (targetAnimal == null || targetAnimal == this)
-                return;
-
-            if (targetAnimal is Predators && GetInstanceID() > targetAnimal.GetInstanceID())
-                return;
-
-            Destroy(targetAnimal.gameObject);
-        }
-
-        private void ChooseDirection()
+        protected void ChooseDirection()
         {
             Vector2 randomDirection = Random.insideUnitCircle.normalized;
             moveDirection = new Vector3(randomDirection.x, 0f, randomDirection.y);
             directionChangeTimer = directionChangeInterval * Random.Range(0.75f, 1.25f);
         }
 
-        private bool TryGetDirectionToVisibleArea(out Vector3 direction)
+        protected bool TryGetDirectionToVisibleArea(out Vector3 direction)
         {
             direction = Vector3.zero;
 
