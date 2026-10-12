@@ -10,36 +10,51 @@
 // // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // // THE SOFTWARE.
 
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
+using VContainer;
 
 namespace DefaultNamespace
 {
-    public class AnimalFabric : MonoBehaviour
+    public sealed class AnimalSpawnSystem : MonoBehaviour
     {
-        [SerializeField, Min(0.1f)] private float minimumSpawnInterval = 1f;
-        [SerializeField, Min(0.1f)] private float maximumSpawnInterval = 2f;
-        [SerializeField, Min(0f)] private float spawnHeight = 0.5f;
+        [SerializeField] private AnimalConfiguration animalConfiguration;
+
+        [Inject] private IObjectResolver objectResolver;
 
         private Camera spawnCamera;
-        private Animal preyPrefab;
-        private Animal predatorPrefab;
+        private AnimalFactory animalFactory;
 
         private void Awake()
         {
+            if (animalConfiguration == null)
+            {
+                Debug.LogError("AnimalConfiguration is not assigned.", this);
+                enabled = false;
+                return;
+            }
+
             spawnCamera = Camera.main;
-            GameObject preyAsset = Resources.Load<GameObject>("Prey");
-            GameObject predatorAsset = Resources.Load<GameObject>("Predator");
-            preyPrefab = preyAsset != null ? preyAsset.GetComponent<Animal>() : null;
-            predatorPrefab = predatorAsset != null ? predatorAsset.GetComponent<Animal>() : null;
+            animalFactory = new AnimalFactory(objectResolver);
+            animalFactory.Initialize(
+                animalConfiguration,
+                transform,
+                this);
             StartCoroutine(SpawnAnimals());
+        }
+
+        private void OnDestroy()
+        {
+            animalFactory?.Dispose();
         }
 
         private IEnumerator SpawnAnimals()
         {
             while (true)
             {
-                float interval = Random.Range(minimumSpawnInterval, maximumSpawnInterval);
+                float interval = Random.Range(
+                    animalConfiguration.MinimumSpawnInterval,
+                    animalConfiguration.MaximumSpawnInterval);
                 yield return new WaitForSeconds(interval);
                 SpawnAnimal();
             }
@@ -47,23 +62,11 @@ namespace DefaultNamespace
 
         private void SpawnAnimal()
         {
-            Vector3 spawnPosition = GetSpawnPosition();
-            Animal animalPrefab = Random.value < 0.5f ? preyPrefab : predatorPrefab;
-            if (animalPrefab == null)
-                animalPrefab = preyPrefab != null ? preyPrefab : predatorPrefab;
-
-            if (animalPrefab != null)
-            {
-                Animal animal = Instantiate(animalPrefab, spawnPosition, animalPrefab.transform.rotation);
-                animal.name = animalPrefab.name;
+            if (!animalFactory.TryCreateRandom(out Animal animal, out Quaternion rotation))
                 return;
-            }
 
-            GameObject animalObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            animalObject.name = "Animal";
-            animalObject.transform.position = spawnPosition;
-            animalObject.transform.localScale = Vector3.one * 0.75f;
-            animalObject.AddComponent<Animal>();
+            animal.transform.SetParent(null, true);
+            animal.transform.SetPositionAndRotation(GetSpawnPosition(), rotation);
         }
 
         private Vector3 GetSpawnPosition()
@@ -75,12 +78,14 @@ namespace DefaultNamespace
             {
                 Vector3 viewportPoint = new Vector3(Random.Range(0.1f, 0.9f), Random.Range(0.1f, 0.9f), 0f);
                 Ray ray = spawnCamera.ViewportPointToRay(viewportPoint);
-                UnityEngine.Plane spawnPlane = new UnityEngine.Plane(Vector3.up, Vector3.up * spawnHeight);
+                UnityEngine.Plane spawnPlane = new UnityEngine.Plane(
+                    Vector3.up,
+                    Vector3.up * animalConfiguration.SpawnHeight);
                 if (spawnPlane.Raycast(ray, out float hitDistance))
                     return ray.GetPoint(hitDistance);
             }
 
-            return new Vector3(0f, spawnHeight, 0f);
+            return new Vector3(0f, animalConfiguration.SpawnHeight, 0f);
         }
     }
 }

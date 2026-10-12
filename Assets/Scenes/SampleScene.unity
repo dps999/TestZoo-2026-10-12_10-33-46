@@ -771,9 +771,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69af89dbf60a44679b7f3c44d32ac231, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minimumSpawnInterval: 1
-  maximumSpawnInterval: 2
-  spawnHeight: 0.5
+  animalConfiguration: {fileID: 11400000, guid: 7d24f08fd76a423987bfb09d016b87de, type: 2}
 --- !u!4 &875906887
 Transform:
   m_ObjectHideFlags: 0
@@ -1061,7 +1059,7 @@ GameObject:
   - component: {fileID: 1830846755}
   - component: {fileID: 1830846754}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: UIManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

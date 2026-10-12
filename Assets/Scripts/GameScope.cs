@@ -8,9 +8,11 @@ namespace DefaultNamespace
     {
         protected override void Configure(IContainerBuilder builder)
         {
+            builder.Register<IGameEventBus, GameEventBus>(Lifetime.Singleton);
+            builder.Register<GameStatistics>(Lifetime.Singleton);
             builder.RegisterComponentInHierarchy<Camera>();
-            builder.RegisterComponentInHierarchy<GameManager>();
-            builder.RegisterComponentInHierarchy<AnimalFabric>();
+            builder.RegisterComponentInHierarchy<UIManager>();
+            builder.RegisterComponentInHierarchy<AnimalSpawnSystem>();
         }
     }
 }
